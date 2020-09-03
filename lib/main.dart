@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutterweatherapp/appTheme.dart';
 
+import 'basePage.dart';
 import 'mainPage.dart';
 
 void main() => runApp(MyApp());
@@ -38,26 +40,27 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
-        iconTheme: IconThemeData(color: Color(0xFF191481)),
-        leading: Icon(Icons.menu),
-        title: Center(
-          child: Text(
-            widget.title,
-            style: TextStyle(color: Color(0xFF191481)),
-          ),
-        ),
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right: 20),
-            child: Icon(Icons.search, size: 28),
-          )
-        ],
-      ),
-      body: MainPage(),
-    );
+    return BasePage(child: MainPage(), title: widget.title,);
+//    return Scaffold(
+//      backgroundColor: Colors.white,
+//      appBar: AppBar(
+//        elevation: 0,
+//        iconTheme: IconThemeData(color: Color(0xFF191481)),
+//        leading: Icon(Icons.menu),
+//        title: Center(
+//          child: Text(
+//            widget.title,
+//            style: TextStyle(color: Color(0xFF191481)),
+//          ),
+//        ),
+//        actions: <Widget>[
+//          Padding(
+//            padding: const EdgeInsets.only(right: 20),
+//            child: Icon(Icons.search, size: 28),
+//          )
+//        ],
+//      ),
+//      body: MainPage(),
+//    );
   }
 }

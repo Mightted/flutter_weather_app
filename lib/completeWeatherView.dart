@@ -10,67 +10,60 @@ class CompleteWeatherView extends StatefulWidget {
   State<StatefulWidget> createState() => _CompleteWeatherState();
 
   Function onTap;
+  String tag;
 
-  CompleteWeatherView({this.onTap});
+  CompleteWeatherView({this.onTap, this.tag});
 }
 
-class _CompleteWeatherState extends State<CompleteWeatherView> with TickerProviderStateMixin {
-  Animation<double> animation;
+class _CompleteWeatherState extends State<CompleteWeatherView>
+    with TickerProviderStateMixin {
+//  Animation<double> animation;
 
   @override
   void initState() {
     super.initState();
-    AnimationController controller = new AnimationController(duration: const Duration(milliseconds: 200), vsync: this);
-    final CurvedAnimation curve = new CurvedAnimation(parent: controller, curve: Curves.easeIn);
-    animation = new Tween(begin: 0.0, end: 1.0).animate(curve);
-    controller.forward();
+//    AnimationController controller = new AnimationController(
+//        duration: const Duration(milliseconds: 200), vsync: this);
+//    final CurvedAnimation curve =
+//        new CurvedAnimation(parent: controller, curve: Curves.easeIn);
+//    animation = new Tween(begin: 0.0, end: 1.0).animate(curve);
+//    controller.forward();
   }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-        onTap: widget.onTap,
-        child: Container(margin: EdgeInsets.symmetric(vertical: 6), child: buildCompleteView(context)));
+        onTap: () {
+          Navigator.pop(context);
+        },
+        child: Container(
+            margin: EdgeInsets.symmetric(vertical: 6),
+            child: buildCompleteView(context)));
   }
 
-  double getHeight() {
-    return (MediaQuery.of(context).size.width * 0.9 / 1.2);
-  }
+//  double getHeight() {
+//    return (MediaQuery.of(context).size.width * 0.9 / 1.2);
+//  }
 
   Widget buildCompleteView(BuildContext context) {
-    return Align(
+    return Container(
       alignment: Alignment.topCenter,
-      child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-        return AnimatedBuilder(
-          animation: animation,
-          child: Container(
-            padding: EdgeInsets.only(top: 30),
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                  fit: BoxFit.fitWidth, image: ExactAssetImage("assets/images/bg_weather_complete.png")),
-              borderRadius: BorderRadius.all(Radius.circular(40)),
-            ),
-            child: _mainWidget(context),
-          ),
-          builder: (BuildContext context, Widget widget) {
-            return Container(
-              width: MediaQuery.of(context).size.width * 0.9,
-              height: getHeight() + (constraints.maxHeight - getHeight()) * animation.value,
-              child: widget,
-            );
-          },
-        );
-      }),
+      margin: EdgeInsets.all(20),
+//        padding: EdgeInsets.only(top: 30),
+      decoration: BoxDecoration(
+        image: DecorationImage(
+            fit: BoxFit.fill,
+            image: ExactAssetImage("assets/images/bg_weather_complete.png")),
+        borderRadius: BorderRadius.all(Radius.circular(40)),
+      ),
+      child: _mainWidget(context),
     );
   }
 
   Widget _mainWidget(BuildContext context) {
-    return FittedBox(
-      fit: BoxFit.fitWidth,
-      alignment: Alignment.topCenter,
-      child: Column(
-        children: <Widget>[
-          WeatherTitle(),
+    return Column(
+      children: <Widget>[
+        Hero(tag: widget.tag, child: WeatherTitle()),
 //          Container(
 //            margin: EdgeInsets.symmetric(vertical: 20),
 //            width: MediaQuery.of(context).size.width * 0.9,
@@ -94,15 +87,18 @@ class _CompleteWeatherState extends State<CompleteWeatherView> with TickerProvid
 //          Text("Clouds & sun", style: TextStyle(fontSize: 25, color: Colors.white)),
 //          Text("Humidity", style: TextStyle(fontSize: 25, color: Colors.white)),
 //          Text("35°", style: TextStyle(fontSize: 30, color: Colors.white)),
-          Container(padding: EdgeInsets.symmetric(horizontal: 10),child: ChartLineView()),
-          Container(
-              margin: EdgeInsets.only(top: 40),
-              child: Text("Rain Starting in 13 min", style: TextStyle(fontSize: 25, color: Colors.white))),
-          Container(
-              margin: EdgeInsets.only(top: 20),
-              child: Text("Nearest precip: 6 mi to the west", style: TextStyle(fontSize: 16, color: Colors.white)))
-        ],
-      ),
+        Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: ChartLineView()),
+        Container(
+            margin: EdgeInsets.only(top: 40),
+            child: Text("Rain Starting in 13 min",
+                style: TextStyle(fontSize: 25, color: Colors.white))),
+        Container(
+            margin: EdgeInsets.only(top: 20),
+            child: Text("Nearest precip: 6 mi to the west",
+                style: TextStyle(fontSize: 16, color: Colors.white))),
+      ],
     );
   }
 

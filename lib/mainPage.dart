@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterweatherapp/appTheme.dart';
-import 'package:flutterweatherapp/completeWeatherView.dart';
 import 'package:page_view_indicators/circle_page_indicator.dart';
 
 import 'mainWeatherView.dart';
@@ -13,10 +11,26 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   Widget weatherWidget;
+  ScrollController controller;
+
+//  int currentIndex = 0;
+  var notifier = ValueNotifier<int>(0);
 
   @override
   void initState() {
     super.initState();
+    controller = ScrollController(initialScrollOffset: 0);
+    controller.addListener(() {
+      var progress = controller.offset / MediaQuery.of(context).size.width;
+      if ((notifier.value - progress).abs() > 0.9) {
+        setState(() {
+          debugPrint("${progress.round()}");
+          notifier.value = progress.round();
+        });
+      }
+    });
+//
+//    notifier
     weatherWidget = buildWeather(context);
   }
 
@@ -33,21 +47,21 @@ class _MainPageState extends State<MainPage> {
               child: Center(
                   child: Text(
                 "Today",
-                style: AppTheme.focusTab,
+                style: notifier.value == 0 ? AppTheme.focusTab : AppTheme.normalTab,
               )),
             ),
             Container(
               child: Center(
                   child: Text(
                 "Tomorrow",
-                style: AppTheme.normalTab,
+                style: notifier.value == 1 ? AppTheme.focusTab : AppTheme.normalTab,
               )),
             ),
             Container(
               child: Center(
                   child: Text(
                 "Next Week",
-                style: AppTheme.normalTab,
+                style: notifier.value == 2 ? AppTheme.focusTab : AppTheme.normalTab,
               )),
             ),
           ],
@@ -62,20 +76,8 @@ class _MainPageState extends State<MainPage> {
   Widget buildWeather(BuildContext context) {
     return ListView(
       children: <Widget>[
-        InkWell(
-          onTap: () {
-            setState(() {
-              weatherWidget = CompleteWeatherView(onTap: (){
-                setState(() {
-                  weatherWidget = buildWeather(context);
-                });
-              },);
-            });
-//                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-//                    return CompleteWeatherView();
-//                  }));
-          },
-          child: PreviewWeatherView()
+        PreviewWeatherView(
+          controller: controller,
         ),
         Container(
           alignment: Alignment.centerLeft,
@@ -152,12 +154,12 @@ class _MainPageState extends State<MainPage> {
               },
             )),
         Container(
-          margin: EdgeInsets.symmetric(vertical: 10),
+          padding: EdgeInsets.only(top: 30),
           child: CirclePageIndicator(
             size: 10,
             selectedSize: 12,
             itemCount: 3,
-            currentPageNotifier: ValueNotifier<int>(0),
+            currentPageNotifier: notifier,
           ),
         )
       ],
