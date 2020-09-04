@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterweatherapp/appTheme.dart';
+import 'package:flutterweatherapp/tabWidget.dart';
 import 'package:page_view_indicators/circle_page_indicator.dart';
 
 import 'mainWeatherView.dart';
@@ -34,6 +35,14 @@ class _MainPageState extends State<MainPage> {
     weatherWidget = buildWeather(context);
   }
 
+  void _changeIndex(int index) {
+    setState(() {
+      controller.animateTo(MediaQuery.of(context).size.width * index,
+          duration: Duration(milliseconds: 100 * (index - notifier.value).abs()), curve: Curves.linear);
+//      notifier.value = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -41,29 +50,38 @@ class _MainPageState extends State<MainPage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 6, horizontal: 14),
-              decoration: BoxDecoration(color: AppTheme.buttonBg, borderRadius: BorderRadius.all(Radius.circular(20))),
-              child: Center(
-                  child: Text(
-                "Today",
-                style: notifier.value == 0 ? AppTheme.focusTab : AppTheme.normalTab,
-              )),
-            ),
-            Container(
-              child: Center(
-                  child: Text(
-                "Tomorrow",
-                style: notifier.value == 1 ? AppTheme.focusTab : AppTheme.normalTab,
-              )),
-            ),
-            Container(
-              child: Center(
-                  child: Text(
-                "Next Week",
-                style: notifier.value == 2 ? AppTheme.focusTab : AppTheme.normalTab,
-              )),
-            ),
+            TabWidget("Today", isFocus: notifier.value == 0, onTap: () {
+              _changeIndex(0);
+            }),
+            TabWidget("Tomorrow", isFocus: notifier.value == 1, onTap: () {
+              _changeIndex(1);
+            }),
+            TabWidget("Next Week", isFocus: notifier.value == 2, onTap: () {
+              _changeIndex(2);
+            }),
+//            Container(
+//              padding: EdgeInsets.symmetric(vertical: 6, horizontal: 14),
+//              decoration: BoxDecoration(color: AppTheme.buttonBg, borderRadius: BorderRadius.all(Radius.circular(20))),
+//              child: Center(
+//                  child: Text(
+//                "Today",
+//                style: notifier.value == 0 ? AppTheme.focusTab : AppTheme.normalTab,
+//              )),
+//            ),
+//            Container(
+//              child: Center(
+//                  child: Text(
+//                "Tomorrow",
+//                style: notifier.value == 1 ? AppTheme.focusTab : AppTheme.normalTab,
+//              )),
+//            ),
+//            Container(
+//              child: Center(
+//                  child: Text(
+//                "Next Week",
+//                style: notifier.value == 2 ? AppTheme.focusTab : AppTheme.normalTab,
+//              )),
+//            ),
           ],
         ),
         Expanded(

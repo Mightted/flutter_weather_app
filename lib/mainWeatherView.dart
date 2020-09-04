@@ -39,6 +39,7 @@ class PreviewWeatherView extends StatelessWidget {
               child: CompleteWeatherView(
                 tag: tag,
               ),
+              title: "India, Mumbai",
             ),
           ),
         );

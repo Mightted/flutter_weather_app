@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
-
+import 'package:dio/dio.dart';
+import 'package:flutterweatherapp/weatherHelper.dart';
 
 class BasePage extends StatelessWidget {
   Widget child;
   String title;
+  Function onRefresh;
 
-  BasePage({this.child, this.title = "Flutter Demo"});
+  BasePage({this.child, this.title = "Flutter Demo", this.onRefresh});
 
+  Future<void> _doRefresh() async {
+    await Future<Null>.delayed(Duration(seconds: 2), () {
+      debugPrint("doRefresh");
+      return null;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +23,12 @@ class BasePage extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         iconTheme: IconThemeData(color: Color(0xFF191481)),
-        leading: Icon(Icons.menu),
+        leading: InkWell(
+          child: Icon(Icons.menu),
+          onTap: () {
+            WeatherHelper().requestWeather();
+          },
+        ),
         title: Center(
           child: Text(
             title,
@@ -29,7 +42,8 @@ class BasePage extends StatelessWidget {
           )
         ],
       ),
-      body: SizedBox(height:MediaQuery.of(context).size.height,child: child),
+      body: RefreshIndicator(
+          onRefresh: _doRefresh, child: SizedBox(height: MediaQuery.of(context).size.height, child: child)),
     );
   }
 }
